@@ -1,0 +1,2 @@
+# Datasets excluded from stitching runs (known hard failures).
+OBJ-GSP-farm

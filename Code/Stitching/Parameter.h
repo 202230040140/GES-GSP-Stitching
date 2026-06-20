@@ -10,7 +10,7 @@
 #define __UglyMan_Stitiching__Parameter__
 
 #include <queue>
-#include <dirent.h>
+#include "../dirent.h"
 #include <sys/stat.h>
 #include "../Configure.h"
 #include "../Util/InputParser.h"

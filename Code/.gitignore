@@ -52,6 +52,9 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
+experiments/
+build/
+Code/model/*.caffemodel
 
 # .NET Core
 project.lock.json

@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 #include <set>
-#include <dirent.h>
+#include "dirent.h"
 #include <algorithm>
 #include <direct.h>
 using namespace std;
@@ -26,6 +26,7 @@ using namespace cv;
 
 
 #include <Eigen/SVD>
+#include <Eigen/Geometry>
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Sparse>
 #include <unsupported/Eigen/SparseExtra> 

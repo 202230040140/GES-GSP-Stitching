@@ -52,6 +52,10 @@ dlldata.c
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
+experiments/
+build/
+Code/model/*.caffemodel
+GES_Stitching.exe
 
 # .NET Core
 project.lock.json

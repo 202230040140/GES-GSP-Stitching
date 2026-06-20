@@ -12,9 +12,8 @@ void edgeDetection(cv::Mat& src, cv::Mat& dst, double threshold)
 	Size reso(img.rows, img.cols);
 	Mat blob = cv::dnn::blobFromImage(img, threshold, reso, false, false);
 
-	//Set your HED files path.
-	string modelCfg = R"(F:\Projects\C++\GES-ImageStitching\model\deploy.prototxt)";
-	string modelBin = R"(F:\Projects\C++\GES-ImageStitching\model\hed_pretrained_bsds.caffemodel)";
+	string modelCfg = R"(model\deploy.prototxt)";
+	string modelBin = R"(model\hed_pretrained_bsds.caffemodel)";
 	Net net = cv::dnn::readNet(modelCfg, modelBin);
 	if (net.empty()) {
 		std::cout << "net empty" << std::endl;
