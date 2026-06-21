@@ -1,6 +1,6 @@
 param(
     [string]$DataRoot = "D:\StitchBench\General",
-    [string]$ExperimentRoot = "experiments\stitchbench_general\ges_gsp",
+    [string]$ExperimentRoot = "D:\StitchBench_Result\ges_gsp",
     [string]$Python = "C:\Users\22499\anaconda3\python.exe",
     [string]$Method = "ges-gsp",
     [double]$ContentWeight = 1.5,
