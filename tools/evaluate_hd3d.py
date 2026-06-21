@@ -164,7 +164,7 @@ def update_summary_csv(path: Path, rows: list[dict]) -> None:
             )
 
 
-METHOD_ORDER = ("traditional", "nis_depths", "depth_gsp", "obj_gsp", "ges_gsp")
+METHOD_ORDER = ("traditional", "nis_depths", "depth_gsp", "obj_gsp", "ges_gsp", "UDIS", "dsfn")
 
 
 def update_report(path: Path, summary_csv: Path, failures: list[dict]) -> None:
