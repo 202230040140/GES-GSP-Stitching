@@ -1,6 +1,6 @@
 ---
 name: HD3D GES-GSP Benchmark
-overview: 在 HD3D 双视图基准（13 场景 × 6 图像对 = 78 次运行）上批量运行 GES-GSP 拼接，按 D:\HD3D_Result 现有目录/JSON/CSV 格式落盘，并更新对比报告。
+overview: 在 HD3D 双视图基准（13 场景 × 6 图像对 = 78 次运行）上批量运行 GES-GSP 拼接，按 D:\HD3D_Dataset_Result 现有目录/JSON/CSV 格式落盘，并更新对比报告。
 todos:
   - id: prepare-pairs
     content: 新增 prepare_hd3d_pairs.py：从 manifest/数据集物化 78 对输入到 _work/pairs
@@ -32,9 +32,9 @@ isProject: false
 **基准任务**：每场景 4 选 2 共 6 个图像对（pair_id: `12, 13, 14, 23, 24, 34`），总计 **78 次双视图拼接**。
 
 **已有基础设施**（无需重建）：
-- [`D:\HD3D_Result\_work\manifest.json`](D:\HD3D_Result\_work\manifest.json)：78 对的元数据（源图路径、GT、graph、输出目录）
-- [`D:\HD3D_Result\_work\graphs\`](D:\HD3D_Result\_work\graphs\)：每对 2 图线性 STITCH-GRAPH（`center_image_index=0`，单边 `0→1`）
-- 4 种基线方法结果：`traditional`、`obj_gsp`、`depth_gsp`、`nis_depths`（[`per_pair_metrics.csv`](D:\HD3D_Result\per_pair_metrics.csv) 共 312 行）
+- [`D:\HD3D_Dataset_Result\_work\manifest.json`](D:\HD3D_Dataset_Result\_work\manifest.json)：78 对的元数据（源图路径、GT、graph、输出目录）
+- [`D:\HD3D_Dataset_Result\_work\graphs\`](D:\HD3D_Dataset_Result\_work\graphs\)：每对 2 图线性 STITCH-GRAPH（`center_image_index=0`，单边 `0→1`）
+- 4 种基线方法结果：`traditional`、`obj_gsp`、`depth_gsp`、`nis_depths`（[`per_pair_metrics.csv`](D:\HD3D_Dataset_Result\per_pair_metrics.csv) 共 312 行）
 
 **缺失项**：
 - `_work\pairs\` 目录已被清理，需按 manifest 重新物化输入
@@ -50,7 +50,7 @@ isProject: false
 与现有方法保持一致，方法标识为 **`ges_gsp`**（CLI `--method ges-gsp`，结果后缀 `GES-GSP_`）：
 
 ```text
-D:\HD3D_Result\
+D:\HD3D_Dataset_Result\
 ├── {Scene}\pair_{id}\ges_gsp\
 │   ├── raw.png                  # 拼接原图
 │   ├── aligned_to_gt.png        # SIFT+RANSAC 对齐到 GT
@@ -66,7 +66,7 @@ D:\HD3D_Result\
 └── report.md                    # 新增 GES-GSP 对比行
 ```
 
-`metrics.json` 字段与现有行一致（见 [`Outdoor_006/pair_12/obj_gsp/metrics.json`](D:\HD3D_Result\Outdoor_006\pair_12\obj_gsp\metrics.json)），其中：
+`metrics.json` 字段与现有行一致（见 [`Outdoor_006/pair_12/obj_gsp/metrics.json`](D:\HD3D_Dataset_Result\Outdoor_006\pair_12\obj_gsp\metrics.json)），其中：
 - `mdr`：对齐 GT 的 RANSAC 重投影 RMSE（像素）
 - `cpp_mdr` / `cpp_warping_*`：来自 C++ debug 文件（[`evaluate_stitchbench_ges_gsp.py`](C:/Users/22499/Documents/GitHub/GES-GSP-Stitching/tools/evaluate_stitchbench_ges_gsp.py) 中 `parse_rmse` / `parse_warping` 可复用）
 - `niqe` / `psnr` / `ssim` / `lpips` / `rmse`：在 valid mask 内计算
@@ -78,7 +78,7 @@ D:\HD3D_Result\
 ### 1. 新增 `tools/prepare_hd3d_pairs.py`
 
 - 读取 `manifest.json`（或从 `D:\HD3D_Dataset` 重新生成 manifest）
-- 为每对创建 `D:\HD3D_Result\_work\pairs\{pair_name}\`，硬链接/复制 `left_source`、`right_source`（排除 `*_gt.jpg`）
+- 为每对创建 `D:\HD3D_Dataset_Result\_work\pairs\{pair_name}\`，硬链接/复制 `left_source`、`right_source`（排除 `*_gt.jpg`）
 - 确认 graph 文件存在（已有则跳过）
 - 写出 `datasets.txt`（78 个 pair 名）
 
@@ -88,9 +88,9 @@ D:\HD3D_Result\
 
 | 参数 | 值 |
 |------|-----|
-| `--data-root` | `D:\HD3D_Result\_work\pairs` |
-| `--graph-root` | `D:\HD3D_Result\_work\graphs` |
-| `--output-root` | `D:\HD3D_Result\_work\ges_gsp` |
+| `--data-root` | `D:\HD3D_Dataset_Result\_work\pairs` |
+| `--graph-root` | `D:\HD3D_Dataset_Result\_work\graphs` |
+| `--output-root` | `D:\HD3D_Dataset_Result\_work\ges_gsp` |
 | `--method` | `ges-gsp` |
 | `--content-weight` | `1.5`（与 StitchBench 默认一致） |
 | `--max-target-megapixels` | `80`（主运行） |
@@ -120,7 +120,7 @@ flowchart LR
     json --> csv[per_pair_metrics.csv]
 ```
 
-实现要点（与 [`report.md`](D:\HD3D_Result\report.md) 描述对齐）：
+实现要点（与 [`report.md`](D:\HD3D_Dataset_Result\report.md) 描述对齐）：
 1. **GT 对齐**：OpenCV SIFT + BFMatcher + RANSAC 单应性，将 `raw.png` 变换到 GT 分辨率 → `aligned_to_gt.png`
 2. **Valid mask**：`edge_connected_black_canvas`——从画布边缘 flood-fill 黑色区域，取反后与 aligned 非黑区域求交
 3. **指标**：`mdr`（对齐 inlier 重投影误差）、`psnr`/`ssim`/`rmse`（mask 内）、`niqe`（raw）、`lpips`（pyiqa `lpips`，max_side=1024）
@@ -137,7 +137,7 @@ flowchart LR
 - **`summary_all.csv`**：按 method 聚合 mean/median（列结构与现有一致），新增 `ges_gsp` 行
 - **`report.md`**：在对比表中插入 GES-GSP 行，并输出与 4 种基线的排名对比（MDR↓、PSNR↑、SSIM↑、LPIPS↓、RMSE↓、NIQE↓、Runtime）
 
-当前基线参考（[`summary_all.csv`](D:\HD3D_Result\summary_all.csv)）：
+当前基线参考（[`summary_all.csv`](D:\HD3D_Dataset_Result\summary_all.csv)）：
 
 | Method | Success | Mean MDR | Mean PSNR | Mean SSIM | Mean LPIPS | Mean RMSE | Mean NIQE | Mean Runtime |
 |--------|---------|----------|-----------|-----------|------------|-----------|-----------|--------------|
@@ -154,7 +154,7 @@ flowchart LR
 # 1. 物化输入对
 python tools/prepare_hd3d_pairs.py `
   --dataset-root D:\HD3D_Dataset `
-  --result-root D:\HD3D_Result
+  --result-root D:\HD3D_Dataset_Result
 
 # 2. 批量拼接（可先 Smoke 单对）
 .\tools\run_hd3d_ges_gsp.ps1 -Dataset Indoor_001_p12
@@ -162,7 +162,7 @@ python tools/prepare_hd3d_pairs.py `
 
 # 3. 评估 + 更新 CSV/报告
 python tools/evaluate_hd3d.py `
-  --result-root D:\HD3D_Result `
+  --result-root D:\HD3D_Dataset_Result `
   --method ges_gsp `
   --update-summary
 ```

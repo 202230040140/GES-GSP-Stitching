@@ -105,7 +105,7 @@ def build_manifest(dataset_root: Path, result_root: Path) -> list[dict]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Prepare HD3D two-view pair folders and manifest for GES-GSP.")
     parser.add_argument("--dataset-root", default=r"D:\HD3D_Dataset")
-    parser.add_argument("--result-root", default=r"D:\HD3D_Result")
+    parser.add_argument("--result-root", default=r"D:\HD3D_Dataset_Result")
     args = parser.parse_args()
 
     dataset_root = Path(args.dataset_root)

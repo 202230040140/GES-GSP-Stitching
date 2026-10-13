@@ -1,6 +1,6 @@
 param(
     [string]$DataRoot = "D:\StitchBench\General",
-    [string]$ExperimentRoot = "D:\StitchBench_Result\ges_gsp",
+    [string]$ExperimentRoot = "D:\StitchBench_Result\_global_work\ges_gsp",
     [string]$Python = "C:\Users\22499\anaconda3\python.exe",
     [string]$Method = "ges-gsp",
     [double]$ContentWeight = 1.5,
@@ -17,6 +17,7 @@ param(
     [switch]$SkipExistingResults,
     [switch]$ForceRerun,
     [switch]$AutoMegapixelFallback = $false,
+    [switch]$IncludeExcluded,
     [switch]$SkipBuild,
     [switch]$SkipRun,
     [switch]$SkipEval,
@@ -162,7 +163,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $Datasets = @(Get-Content -Path $DatasetsFile | Where-Object { $_ -and (-not $_.TrimStart().StartsWith("#")) })
-$ExcludedDatasets = @(Read-ExcludedDatasets -Path $ExcludedDatasetsFile)
+$ExcludedDatasets = if ($IncludeExcluded) { @() } else { @(Read-ExcludedDatasets -Path $ExcludedDatasetsFile) }
+if ($IncludeExcluded) {
+    Write-Host "Known exclusions will be attempted; failures remain failures."
+}
 if ($ExcludedDatasets.Count -gt 0) {
     Write-Host ("Excluded datasets ({0}): {1}" -f $ExcludedDatasets.Count, ($ExcludedDatasets -join ", "))
 }

@@ -1,6 +1,6 @@
 param(
     [string]$DatasetRoot = "D:\HD3D_Dataset",
-    [string]$ResultRoot = "D:\HD3D_Result",
+    [string]$ResultRoot = "D:\HD3D_Dataset_Result",
     [string]$Python = "C:\Users\22499\anaconda3\python.exe",
     [string]$Method = "ges-gsp",
     [string]$MethodFolder = "ges_gsp",

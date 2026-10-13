@@ -43,6 +43,9 @@ DEFAULT_CSV_FIELDS = [
 
 
 def load_manifest(path: Path) -> list[dict]:
+    if path.suffix.lower() == '.csv':
+        with path.open(newline='',encoding='utf-8-sig') as stream:
+            return list(csv.DictReader(stream))
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -68,7 +71,7 @@ def build_pair_paths(manifest_entry: dict, result_root: Path, method: str, work_
         pair_name=pair_name,
         final_pair_dir=final_pair_dir,
         method_dir=method_dir,
-        raw_path=method_dir / "raw.png",
+        raw_path=method_dir / ('stitch_result.png' if (method_dir / 'stitch_result.png').exists() else 'raw.png'),
         aligned_path=method_dir / "aligned_to_gt.png",
         valid_mask_path=method_dir / "valid_mask.png",
         gt_path=Path(manifest_entry["gt_path"]),
@@ -297,8 +300,8 @@ def collect_failures(rows: list[dict], method: str) -> list[dict]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate HD3D stitching outputs and update CSV/report.")
-    parser.add_argument("--result-root", default=r"D:\HD3D_Result")
-    parser.add_argument("--manifest", default=r"D:\HD3D_Result\_work\manifest.json")
+    parser.add_argument("--result-root", default=r"D:\HD3D_Dataset_Result")
+    parser.add_argument("--manifest", default=r"D:\HD3D_Dataset_Result\_global_work\_work_root\manifest.csv")
     parser.add_argument("--work-root", help="C++ output root for debug metrics (default: <result-root>/_work/<method>).")
     parser.add_argument("--method", default=DEFAULT_METHOD)
     parser.add_argument("--pair", action="append", help="Limit to one pair name; can be repeated.")

@@ -53,11 +53,13 @@ void printUsage() {
 		<< "  --max-target-megapixels VALUE  Abort if output canvas exceeds this size\n"
 		<< "  --datasets-file PATH     Text file with one dataset name per line\n"
 		<< "  --dataset NAME           Add one dataset name\n";
+	cout << "  --skip-assessment        Write images only, without geometric evaluation\n";
 }
 }
 
 int main(int argc, const char* argv[]) {
 	vector<string> data_list;
+	bool skip_assessment = false;
 
 	try {
 		for (int i = 1; i < argc; ++i) {
@@ -65,6 +67,9 @@ int main(int argc, const char* argv[]) {
 			if (arg == "--help" || arg == "-h") {
 				printUsage();
 				return 0;
+			}
+			else if (arg == "--skip-assessment") {
+				skip_assessment = true;
 			}
 			else if (arg.rfind("--data-root", 0) == 0) {
 				g_runtime_config.data_root = normalizePath(getArgValue(i, argc, argv, arg));
@@ -159,7 +164,7 @@ int main(int argc, const char* argv[]) {
 			cout << "Time:" << double(end - start) / CLOCKS_PER_SEC << endl;
 			niswgsp.writeImage(blend_linear, BLENDING_METHODS_NAME[BLEND_LINEAR]);
 
-			niswgsp.assessment(original_vertices);
+			if (!skip_assessment) niswgsp.assessment(original_vertices);
 		}
 		catch (const exception& ex) {
 			++failed_count;
